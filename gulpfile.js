@@ -5,7 +5,7 @@ var reload = browserSync.reload;
 
 var paths = {
   static: ['./client/src/**', '!**/*.less'],
-  less: './client/src/styles.less'
+  less: './client/src/less/styles.less'
 };
 
 // Generate css from less-files and concatenate all css:
