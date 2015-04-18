@@ -1,11 +1,19 @@
 var gulp = require('gulp');
+var del = require('del');
 var less = require('gulp-less');
+var reactify = require('reactify');
+var watchify = require('watchify');
+var browserify = require('browserify');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
+var source = require('vinyl-source-stream');
 
 var paths = {
-  static: ['./client/src/**', '!**/*.less'],
-  less: './client/src/less/styles.less'
+  static: ['./client/src/**', '!./client/src/**/*.less', '!./client/src/**/*.js'],
+  less: './client/src/less/styles.less',
+  js: './client/src/app.js',
+  allJs: ['./client/src/**/*.js', './client/src/**/*.jsx'],
+  build: './client/build'
 };
 
 // Generate css from less-files and concatenate all css:
@@ -19,9 +27,45 @@ gulp.task('less', function() {
 // Copy static files to build folder
 gulp.task('copy', function() {
   return gulp.src(paths.static)
-    .pipe(gulp.dest('./client/build'));
+    .pipe(gulp.dest(paths.build));
 });
 gulp.task('copy-watch', ['copy'], reload);
+
+// Watch javascript files, bundle, browserify and reactify on change
+function scripts(watch) {
+  var bundler, rebundle;
+  bundler = browserify({
+    basedir: './', 
+    debug: true,
+    entries: paths.js,
+    cache: {}, // required for watchify
+    packageCache: {}, // required for watchify
+    fullPaths: watch // required to be true only for watchify
+  });
+  if(watch) {
+    bundler = watchify(bundler) 
+  }
+ 
+  bundler.transform(reactify);
+ 
+  rebundle = function() {
+    return bundler.bundle()
+            .pipe(source('bundle.js'))
+            .pipe(gulp.dest(paths.build))
+            .pipe(reload({ stream: true }));
+  };
+ 
+  bundler.on('update', rebundle);
+  return rebundle();
+} 
+
+gulp.task('scripts', function() {
+  return scripts(false);
+});
+ 
+gulp.task('watchScripts', function() {
+  return scripts(true);
+});
 
 // Run build-tasks when files changes
 gulp.task('watch', function() {
@@ -30,11 +74,15 @@ gulp.task('watch', function() {
 });
 
 gulp.task('server', function() {
-  // Start node express app
+  // Start node express app 
   require('./index.js');
   // reload browser when files changes
   browserSync({ proxy: 'localhost:1337' });
 });
 
+// Delete gulp-generated files
+gulp.task('clean', function() {
+  del(paths.build);
+});
 
-gulp.task('default', ['copy', 'less', 'watch', 'server']);
+gulp.task('default', ['copy', 'less', 'watch', 'watchScripts', 'server']);

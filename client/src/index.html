@@ -2,8 +2,6 @@
 <html>
   <head>
     <title>Javabin demo</title>
-    <script src="https://fb.me/react-0.13.1.js"></script>
-    <script src="https://fb.me/JSXTransformer-0.13.1.js"></script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,69 +18,7 @@
         <div id="content"></div>
       </div>
     </div>
-    <script type="text/jsx">
-      // The components
-      var ContactCard = React.createClass({
-        render: function() {
-          var imageUrl = 'http://www.gravatar.com/avatar/' +
-                         this.props.data.md5 +
-                         '?s=210';
-          return (
-            <div className="col-md-4 col-sm-6 col-xs-12">
-              <div className="text-center panel panel-default well">
-                <h3>{this.props.data.name}</h3>
-                <img src={imageUrl} 
-                  className="avatar img-circle img-thumbnail" alt="avatar"/>
-                <a href="mailto:#">{this.props.data.email}</a>
-              </div>
-            </div>
-          );
-        }
-      });
-      var ContactCardList = React.createClass({
-        render: function() {
-          var cards = this.props.data.map(function (person) {
-            return (
-              <ContactCard data={person} key={person.email}/>
-            );
-          });
-          return (
-            <div className="row">{cards}</div>
-          );
-        }
-      });
-
-
-      // The data
-      var persons = [
-        {
-          name: 'Thomas Haukland',
-          md5: '1693a7ce631ddbe4a2287cb0b4d28582',
-          email: 'thomas.haukland@gmail.com'
-        },
-        {
-          name: 'Endre Stølsvik',
-          md5: '3fe81542cd6437a443d49014e6a69a78',
-          email: 'endre@stolsvik.com'
-        },
-        {
-          name: 'Hallvard Nygård',
-          md5: 'b4b9167a8d87b37dfd988bd30277a1a3',
-          email: 'hallvard.nygard@gmail.com'
-        },
-        {
-          name: 'Steffen Jørgensen',
-          md5: 'f900c069740a1e87ef3505ab654e2b15',
-          email: 'steffen.jorgensen@webstep.no'
-        }
-      ];
-
-      // The rendering
-      React.render(
-        <ContactCardList data={persons}/>,
-       document.getElementById('content')
-      ); 
-    </script>
+    <script src="bundle.js"></script>
   </body>
 </html>
 
