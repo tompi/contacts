@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var gutil = require('gulp-util');
 var del = require('del');
 var less = require('gulp-less');
 var reactify = require('reactify');
@@ -7,12 +8,16 @@ var browserify = require('browserify');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
 
 var paths = {
-  static: ['./client/src/**', '!./client/src/**/*.less', '!./client/src/**/*.js'],
+  static: [
+    './client/src/**', 
+    './node_modules/bootstrap/**/fonts/*.*',
+    '!./client/src/**/*.less', 
+    '!./client/src/**/*.js'],
   less: './client/src/less/styles.less',
   js: './client/src/app.js',
-  allJs: ['./client/src/**/*.js', './client/src/**/*.jsx'],
   build: './client/build'
 };
 
@@ -50,7 +55,9 @@ function scripts(watch) {
  
   rebundle = function() {
     return bundler.bundle()
+            .on('error', gutil.log.bind(gutil, 'Browserify Error'))
             .pipe(source('bundle.js'))
+            .pipe(buffer())
             .pipe(gulp.dest(paths.build))
             .pipe(reload({ stream: true }));
   };
@@ -85,4 +92,4 @@ gulp.task('clean', function() {
   del(paths.build);
 });
 
-gulp.task('default', ['copy', 'less', 'watch', 'watchScripts', 'server']);
+gulp.task('default', ['copy', 'less', 'server', 'watch', 'watchScripts']);
