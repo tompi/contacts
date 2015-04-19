@@ -9,15 +9,22 @@ var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
+var eslint = require('gulp-eslint');
 
 var paths = {
   static: [
-    './client/src/**', 
+    './client/src/**',
     './node_modules/bootstrap/**/fonts/*.*',
-    '!./client/src/**/*.less', 
-    '!./client/src/**/*.js'],
+    '!./client/src/**/*.less',
+    '!./client/src/**/*.js'
+  ],
   less: './client/src/less/styles.less',
-  js: './client/src/app.js',
+  jsStart: './client/src/app.js',
+  js: [
+    './client/src/**/*.(js|jsx)',
+    './server/**/*.js',
+    './gulpfile.js'
+  ],
   build: './client/build'
 };
 
@@ -27,6 +34,13 @@ gulp.task('less', function() {
     .pipe(less())
     .pipe(gulp.dest('./client/build'))
     .pipe(reload({stream: true}));
+});
+
+// Generate css from less-files and concatenate all css:
+gulp.task('eslint', function() {
+  return gulp.src(paths.js)
+    .pipe(eslint())
+    .pipe(eslint.format());
 });
 
 // Copy static files to build folder
@@ -40,19 +54,19 @@ gulp.task('copy-watch', ['copy'], reload);
 function scripts(watch) {
   var bundler, rebundle;
   bundler = browserify({
-    basedir: './', 
-    debug: false,
-    entries: paths.js,
+    basedir: './',
+    debug: true,
+    entries: paths.jsStart,
     cache: {}, // required for watchify
     packageCache: {}, // required for watchify
     fullPaths: watch // required to be true only for watchify
   });
   if(watch) {
-    bundler = watchify(bundler) 
+    bundler = watchify(bundler);
   }
- 
+
   bundler.transform(babelify);
- 
+
   rebundle = function() {
     console.log('rebundling...');
     return bundler.bundle()
@@ -62,15 +76,15 @@ function scripts(watch) {
             .pipe(gulp.dest(paths.build))
             .pipe(reload({ stream: true }));
   };
- 
+
   bundler.on('update', rebundle);
   return rebundle();
-} 
+}
 
 gulp.task('scripts', function() {
   return scripts(false);
 });
- 
+
 gulp.task('watchScripts', ['scripts'], function() {
   return scripts(true);
 });
@@ -82,7 +96,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('server', ['less', 'copy', 'scripts'], function() {
-  // Start node express app 
+  // Start node express app
   require('./server/index.js');
   // reload browser when files changes
   browserSync({ proxy: 'localhost:1337' });
@@ -93,4 +107,13 @@ gulp.task('clean', function() {
   del(paths.build);
 });
 
-gulp.task('default', ['copy', 'less', 'scripts', 'watch', 'watchScripts', 'server']);
+gulp.task('default',
+  [
+    'copy',
+    'less',
+    'eslint',
+    'scripts',
+    'watch',
+    'watchScripts',
+    'server'
+  ]);

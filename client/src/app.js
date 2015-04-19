@@ -8,5 +8,4 @@ BackendApi.getAllContacts();
 React.render(
   <ContactApp/>,
   document.getElementById('content')
-); 
-
+);

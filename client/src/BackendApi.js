@@ -20,7 +20,7 @@ api.createContact = function(contact) {
       data: contact
     })
     .done(function(createdContact) {
-      ServerAction.receiveCreated(createdContact);
+      ServerActions.receiveCreated(createdContact);
     });
 };
 
@@ -30,7 +30,7 @@ api.deleteContact = function(email) {
       type: 'DELETE'
     })
     .done(function() {
-      ServerAction.receiveDeleted(email);
+      ServerActions.receiveDeleted(email);
     });
 };
 

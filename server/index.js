@@ -11,22 +11,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/api/contacts', function(req, res) {
   ContactService.getAll(function(contacts) {
     res.send(contacts);
-    console.log("Sent all contacts");
+    console.log('Sent all contacts');
   });
 });
 
 app.post('/api/contacts', function(req, res) {
   ContactService.create(req.body, function(contact) {
     res.send(contact);
-    console.log("Created contact:");
+    console.log('Created contact:');
     console.log(contact);
   });
 });
 
 app.delete('/api/contacts/:email', function(req, res) {
-  ContactService.delete(req.params.email, function() {
-    res.send(req.email);
-    console.log("Deleted contact " + req.params.email);
+  ContactService.delete(req.params.email, function(email) {
+    res.send(email);
+    console.log('Deleted contact ' + email);
   });
 });
 
@@ -34,8 +34,11 @@ app.use(express.static('client/build'));
 
 var mongoUrl = 'mongodb://javabin:topsecret@ds037581.mongolab.com:37581/javabindemo';
 MongoClient.connect(mongoUrl, function(err, db) {
-  if (err) console.log(err);
-  ContactService.setDb(db);
-  var server = http.createServer(app);
-  server.listen(1337);
+  if (err) {
+    console.log(err);
+  } else {
+    ContactService.setDb(db);
+    var server = http.createServer(app);
+    server.listen(1337);
+  }
 });

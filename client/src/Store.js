@@ -53,10 +53,18 @@ Dispatcher.register(function(action) {
       store.emitChange();
       break;
 
+    case Constants.RECEIVE_CREATED:
+      // Remove existing copy
+      store.destroy(action.contact.email);
+      // Add new
+      store.create(action.contact);
+      // emit change event to notify listeners
+      store.emitChange();
+      break;
+
     default:
       // no op
   }
 });
 
 module.exports = store;
-

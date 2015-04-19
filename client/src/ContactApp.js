@@ -18,25 +18,26 @@ module.exports = React.createClass({
       <div className="container-fluid">
         <div>
           <h1 className="text-center">
-            <button 
+            <button
               className="btn btn-default pull-right"
               onClick={this._toggleShowForm}>{showFormButtonText}</button>
             Hello, Javabins <small>or javabinners?</small>
           </h1>
         </div>
         <div className={formClass}>
-          <form className="form-horizontal" role="form" onsubmit="return false;">
+          <form className="form-horizontal" role="form"
+              onSubmit={this._handleSubmit}>
             <div className="form-group">
               <label htmlFor="email" className="col-sm-2 control-label">
                Email
               </label>
               <div className="col-sm-10">
-                <input 
+                <input
                   onChange={this._onChangeEmail}
                   value={this.state.email}
-                  type="email" 
-                  className="form-control" 
-                  placeholder="Email" 
+                  type="email"
+                  className="form-control"
+                  placeholder="Email"
                   id="email"/>
               </div>
             </div>
@@ -45,19 +46,18 @@ module.exports = React.createClass({
                 Name
               </label>
               <div className="col-sm-10">
-                <input 
+                <input
                   onChange={this._onChangeName}
                   value={this.state.name}
-                  type="text" 
-                  className="form-control" 
-                  placeholder="Name" 
+                  type="text"
+                  className="form-control"
+                  placeholder="Name"
                   id="name"/>
               </div>
             </div>
             <div className="form-group">
               <div className="col-sm-offset-2 col-sm-10">
-                <button 
-                  onClick={this._save}
+                <button
                   className="btn btn-primary">OK</button>
               </div>
             </div>
@@ -80,14 +80,14 @@ module.exports = React.createClass({
     this.state.name = event.target.value;
     this.setState(this.state);
   },
-  _save: function() {
+  _handleSubmit: function(e) {
+    // Prevent submitting the form
+    e.preventDefault();
     // Trigger action
     Actions.create(this.state.email, this.state.name);
     // Reset form
     this.state.email = '';
     this.state.name = '';
     this.setState(this.state);
-    // Prevent submitting the form
-    return false;
   }
 });
