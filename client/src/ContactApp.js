@@ -21,7 +21,7 @@ module.exports = React.createClass({
             <button 
               className="btn btn-default pull-right"
               onClick={this._toggleShowForm}>{showFormButtonText}</button>
-            Hello, Javabins<small>or javabinners?</small>
+            Hello, Javabins <small>or javabinners?</small>
           </h1>
         </div>
         <div className={formClass}>
@@ -81,7 +81,12 @@ module.exports = React.createClass({
     this.setState(this.state);
   },
   _save: function() {
+    // Trigger action
     Actions.create(this.state.email, this.state.name);
+    // Reset form
+    this.state.email = '';
+    this.state.name = '';
+    this.setState(this.state);
     // Prevent submitting the form
     return false;
   }

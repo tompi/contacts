@@ -41,7 +41,7 @@ function scripts(watch) {
   var bundler, rebundle;
   bundler = browserify({
     basedir: './', 
-    debug: true,
+    debug: false,
     entries: paths.js,
     cache: {}, // required for watchify
     packageCache: {}, // required for watchify
@@ -70,7 +70,7 @@ gulp.task('scripts', function() {
   return scripts(false);
 });
  
-gulp.task('watchScripts', function() {
+gulp.task('watchScripts', ['scripts'], function() {
   return scripts(true);
 });
 
@@ -80,9 +80,9 @@ gulp.task('watch', function() {
   gulp.watch(paths.static, ['copy-watch']);
 });
 
-gulp.task('server', function() {
+gulp.task('server', ['less', 'copy', 'scripts'], function() {
   // Start node express app 
-  require('./index.js');
+  require('./server/index.js');
   // reload browser when files changes
   browserSync({ proxy: 'localhost:1337' });
 });
@@ -92,4 +92,4 @@ gulp.task('clean', function() {
   del(paths.build);
 });
 
-gulp.task('default', ['copy', 'less', 'server', 'watch', 'watchScripts']);
+gulp.task('default', ['copy', 'less', 'scripts', 'watch', 'watchScripts', 'server']);

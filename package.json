@@ -2,13 +2,14 @@
   "name": "contacts",
   "version": "1.0.0",
   "description": "Javabin demo app",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thomas Haukland <thomas.haukland@gmail.com> (https://github.com/tompi)",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.12.3",
     "express": "^4.12.3"
   },
   "devDependencies": {

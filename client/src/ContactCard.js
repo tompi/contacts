@@ -16,7 +16,7 @@ module.exports = React.createClass({
           <h3>{this.props.data.name}</h3>
           <img src={imageUrl} 
             className="avatar img-circle img-thumbnail" alt="avatar"/>
-          <a href="mailto:#">{this.props.data.email}</a>
+          <div><a href="mailto:#">{this.props.data.email}</a></div>
         </div>
       </div>
     );

@@ -1,5 +1,6 @@
 module.exports = {
   CREATE: 'create',
-  DESTROY: 'destroy'
+  DESTROY: 'destroy',
+  RECEIVE_ALL: 'receive_all'
 };
 
