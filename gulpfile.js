@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var del = require('del');
 var less = require('gulp-less');
-var reactify = require('reactify');
+var babelify = require('babelify');
 var watchify = require('watchify');
 var browserify = require('browserify');
 var browserSync = require('browser-sync');
@@ -51,9 +51,10 @@ function scripts(watch) {
     bundler = watchify(bundler) 
   }
  
-  bundler.transform(reactify);
+  bundler.transform(babelify);
  
   rebundle = function() {
+    console.log('rebundling...');
     return bundler.bundle()
             .on('error', gutil.log.bind(gutil, 'Browserify Error'))
             .pipe(source('bundle.js'))
