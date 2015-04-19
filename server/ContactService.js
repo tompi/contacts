@@ -1,6 +1,8 @@
 var _ = require('lodash');
+var _db;
+var _collection;
 
-var _contacts  = [
+var _contacts = [
   { 
     name: 'Thomas Haukland',
     md5: '1693a7ce631ddbe4a2287cb0b4d28582',
@@ -25,20 +27,28 @@ var _contacts  = [
 
 var service = {};
 
-service.getAll = function() {
-  return _contacts;
+service.setDb = function(db) {
+  _db = db;
+  _collection = _db.collection('contacts');
 };
 
-service.create = function(contact) {
-  _contacts.unshift(contact);
-  return contact;
-};
-
-service.delete = function(email) {
-  var index = _.findIndex(_contacts, function(contact) {
-    return contact.email === email;
+service.getAll = function(next) {
+  _collection.find({}).toArray(function(err, contacts) {
+    next(contacts);
   });
-  if (index >= 0) _contacts.splice(index, 1);
+};
+
+service.create = function(contact, next) {
+  _collection.insert(contact, function(err, result) {
+    // result.ops is document with _id
+    next(result.ops);
+  });
+};
+
+service.delete = function(email, next) {
+  _collection.remove({ email: email }, function(err, result) {
+    next();
+  });
 };
 
 module.exports = service;
