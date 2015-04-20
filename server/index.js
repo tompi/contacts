@@ -3,6 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var ContactService = require('./ContactService');
 var MongoClient = require('mongodb');
+var isomorphicExample = require('./isomorphicExample');
 
 var app = express();
 app.use(bodyParser.json());
@@ -11,6 +12,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 function handleError(res, error) {
   res.status(400).json({error: error});
 }
+
+app.get('/isomorphic', function(req, res) {
+  isomorphicExample.render(function(html) {
+    res.send(html);
+  });
+});
 
 app.get('/api/contacts', function(req, res) {
   ContactService.getAll(function(contacts) {

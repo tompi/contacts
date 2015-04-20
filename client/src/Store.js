@@ -67,4 +67,8 @@ Dispatcher.register(function(action) {
   }
 });
 
+store.populate = function(contacts) {
+  _contacts = contacts;
+};
+
 module.exports = store;

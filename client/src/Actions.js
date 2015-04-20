@@ -7,21 +7,21 @@ module.exports = {
   create: function(email, name) {
     var md5Chk = md5.digest_s(email.trim().toLowerCase());
     var contact = {
-        email,
-        name,
+        email: email,
+        name: name,
         md5: md5Chk
     };
     BackendApi.createContact(contact);
     Dispatcher.dispatch({
       actionType: Constants.CREATE,
-      contact
+      contact: contact
     });
   },
 
   destroy: function(email) {
     Dispatcher.dispatch({
       actionType: Constants.DESTROY,
-      email
+      email: email
     });
     BackendApi.deleteContact(email);
   }
