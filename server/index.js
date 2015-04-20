@@ -8,6 +8,10 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+function handleError(res, error) {
+  res.status(400).json({error: error});
+}
+
 app.get('/api/contacts', function(req, res) {
   ContactService.getAll(function(contacts) {
     res.send(contacts);
@@ -16,10 +20,16 @@ app.get('/api/contacts', function(req, res) {
 });
 
 app.post('/api/contacts', function(req, res) {
-  ContactService.create(req.body, function(contact) {
-    res.send(contact);
-    console.log('Created contact:');
-    console.log(contact);
+  var incomingContact = req.body;
+  console.log(incomingContact);
+  ContactService.create(req.body, function(err, contact) {
+    if (err) {
+      handleError(res, err);
+    } else {
+      res.send(contact);
+      console.log('Created contact:');
+      console.log(contact);
+    }
   });
 });
 

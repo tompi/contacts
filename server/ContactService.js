@@ -1,3 +1,4 @@
+var novalidation = require('novalidation');
 var collection;
 var service = {};
 
@@ -16,15 +17,15 @@ service.getAll = function(next) {
 };
 
 service.create = function(contact, next) {
-  collection.insert(contact, function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
+  if (!novalidation.fodselsNummer(contact.ssn)) {
+    next('invalid ssn', contact);
+  } else {
+    collection.insert(contact, function(err, result) {
       // result.ops[0] is document with _id
       // Add delay
-      setTimeout(function() { next(result.ops[0]); }, 2000);
-    }
-  });
+      setTimeout(function() { next(err, result.ops[0]); }, 2000);
+    });
+  }
 };
 
 service.delete = function(email, next) {
