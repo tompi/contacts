@@ -1,6 +1,7 @@
 var React = require('react');
 var Actions = require('./Actions');
 var ContactCardList = require('./ContactCardList');
+var novalidation = require('novalidation');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -12,6 +13,10 @@ module.exports = React.createClass({
     var formClass = 'well';
     if (!this.state.showForm) {
       formClass += ' hidden';
+    }
+    var ssnClass = 'form-group';
+    if (!novalidation.fodselsNummer(this.state.ssn)) {
+      ssnClass += ' has-error';
     }
     var showFormButtonText = this.state.showForm ? "Hide form" : "Show form";
     return (
@@ -55,6 +60,20 @@ module.exports = React.createClass({
                   id="name"/>
               </div>
             </div>
+            <div className={ssnClass}>
+              <label htmlFor="ssn" className="col-sm-2 control-label">
+                Ssn
+              </label>
+              <div className="col-sm-10">
+                <input
+                  onChange={this._onChangeSsn}
+                  value={this.state.ssn}
+                  type="text"
+                  className="form-control"
+                  placeholder="Ssn"
+                  id="ssn"/>
+              </div>
+            </div>
             <div className="form-group">
               <div className="col-sm-offset-2 col-sm-10">
                 <button
@@ -80,14 +99,24 @@ module.exports = React.createClass({
     this.state.name = event.target.value;
     this.setState(this.state);
   },
+  _onChangeSsn: function(event) {
+    this.state.ssn = event.target.value;
+    this.setState(this.state);
+  },
   _handleSubmit: function(e) {
     // Prevent submitting the form
     e.preventDefault();
-    // Trigger action
-    Actions.create(this.state.email, this.state.name);
-    // Reset form
-    this.state.email = '';
-    this.state.name = '';
-    this.setState(this.state);
+    // Only submit if valid ssn and name+email
+    if (novalidation.fodselsNummer(this.state.ssn)
+        && this.state.email
+        && this.state.mail) {
+      // Trigger action
+      Actions.create(this.state.email, this.state.name);
+      // Reset form
+      this.state.email = '';
+      this.state.name = '';
+      this.state.ssn = '';
+      this.setState(this.state);
+    }
   }
 });

@@ -93,6 +93,7 @@ gulp.task('watchScripts', ['scripts'], function() {
 gulp.task('watch', function() {
   gulp.watch(paths.less, ['less']);
   gulp.watch(paths.static, ['copy-watch']);
+  gulp.watch(paths.js, ['eslint']);
 });
 
 gulp.task('server', ['less', 'copy', 'scripts'], function() {
