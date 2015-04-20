@@ -109,9 +109,9 @@ module.exports = React.createClass({
     // Only submit if valid ssn and name+email
     if (novalidation.fodselsNummer(this.state.ssn)
         && this.state.email
-        && this.state.mail) {
+        && this.state.name) {
       // Trigger action
-      Actions.create(this.state.email, this.state.name);
+      Actions.create(this.state.email, this.state.name, this.state.ssn);
       // Reset form
       this.state.email = '';
       this.state.name = '';

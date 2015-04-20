@@ -29,10 +29,12 @@ exports.render = function(next) {
     html += '          poster="assets/hipsters.jpg" autoplay loop></video>';
     html += '    <div class="container" id="content">';
 
-    html += React.renderToStaticMarkup(React.createFactory(ContactApp)({}));
+    html += React.renderToString(React.createFactory(ContactApp)({}));
 
     html += '    </div>';
-    // TODO: "progressive enhancement"  html += '    <script src="bundle.js"></script>';
+    // Inline store-data as window constant
+    html += '    <script>window.contacts = ' + JSON.stringify(contacts) + '</script>';
+    html += '    <script src="isomorphic.js"></script>';
     html += '  </body>';
     html += '</html>';
 

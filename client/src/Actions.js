@@ -4,12 +4,13 @@ var BackendApi = require('./BackendApi');
 var md5 = require('md5');
 
 module.exports = {
-  create: function(email, name) {
+  create: function(email, name, ssn) {
     var md5Chk = md5.digest_s(email.trim().toLowerCase());
     var contact = {
         email: email,
         name: name,
-        md5: md5Chk
+        md5: md5Chk,
+        ssn: ssn
     };
     BackendApi.createContact(contact);
     Dispatcher.dispatch({

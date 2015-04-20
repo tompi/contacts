@@ -19,7 +19,6 @@ var paths = {
     '!./client/src/**/*.js'
   ],
   less: './client/src/less/styles.less',
-  jsStart: './client/src/app.js',
   js: [
     './client/src/**/*.(js|jsx)',
     './server/**/*.js',
@@ -51,12 +50,12 @@ gulp.task('copy', function() {
 gulp.task('copy-watch', ['copy'], reload);
 
 // Watch javascript files, bundle, browserify and reactify on change
-function scripts(watch) {
+function scripts(watch, startFile, destinationFile) {
   var bundler, rebundle;
   bundler = browserify({
     basedir: './',
     debug: true,
-    entries: paths.jsStart,
+    entries: startFile,
     cache: {}, // required for watchify
     packageCache: {}, // required for watchify
     fullPaths: watch // required to be true only for watchify
@@ -71,7 +70,7 @@ function scripts(watch) {
     console.log('rebundling...');
     return bundler.bundle()
             .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-            .pipe(source('bundle.js'))
+            .pipe(source(destinationFile))
             .pipe(buffer())
             .pipe(gulp.dest(paths.build))
             .pipe(reload({ stream: true }));
@@ -82,11 +81,14 @@ function scripts(watch) {
 }
 
 gulp.task('scripts', function() {
-  return scripts(false);
+  return scripts(false, './client/src/app.js', 'bundle.js');
+});
+gulp.task('isomorphic', function() {
+  return scripts(false, './client/src/isomorphic.js', 'isomorphic.js');
 });
 
 gulp.task('watchScripts', ['scripts'], function() {
-  return scripts(true);
+  return scripts(true, './client/src/app.js', 'bundle.js');
 });
 
 // Run build-tasks when files changes
@@ -114,6 +116,7 @@ gulp.task('default',
     'less',
     'eslint',
     'scripts',
+    'isomorphic',
     'watch',
     'watchScripts',
     'server'
